@@ -78,7 +78,32 @@ Fourth, we end the line with a semicolon (;),
    But in those languages, you only need one command to compile and run your program.
     Everything is a trade-off in language design.
     
+## Hello, Cargo!
+
     
+##### Directly from the docs:::
+
+- Cargo is Rust’s build system and package manager. 
+- Because the vast majority of Rust projects use Cargo, the rest of this book assumes that you’re using Cargo too.
+- The simplest Rust programs, like the one we’ve written so far, don’t have any dependencies.
+- cargo --version:  `cargo 1.50.0 (f04e7fab7 2021-02-04`
+
 	
-	
-	
+### Creating a Project with Cargo
+
+-` $ cargo new hello_cargo`
+- `$ cd hello_cargo`
+
+##### Directly from the docs:::
+
+The first command creates a new directory called `hello_cargo`. 
+We’ve named our project `hello_cargo`, and Cargo creates its files 
+in a directory of the same name.
+
+Go into the hello_cargo directory and list the files. 
+You’ll see that Cargo has generated two files and one directory for us:
+ a Cargo.toml file and a src directory with a main.rs file inside.
+
+It has also initialized a new Git repository along with a .gitignore file. 
+Git files won’t be generated if you run cargo new within an existing Git repository; 
+you can override this behavior by using cargo new --vcs=git.
