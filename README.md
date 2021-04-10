@@ -223,3 +223,10 @@ match guess.cmp(&secret_number) {
     }
 ```
 
+
+- Multi-line things are done with curly braces => {
+	line one;
+	line two;
+}
+
+- `match` statements are just like `switch` statements 
