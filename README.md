@@ -230,3 +230,209 @@ match guess.cmp(&secret_number) {
 }
 
 - `match` statements are just like `switch` statements 
+
+- `continue` takes you to the next iteration of the loop
+- other things can be returned before `continue`
+- _ is the catch-all (like *)
+- not sure what the & before `variable` is doing
+- `break` breaks the loop - makes it act like a while?
+- `let` shadows variables  - reassigning
+
+
+## Chapter 3
+
+NB: there are reserved keywords - find them in rust book appendix A
+
+CONTENT
+
+variables, basic types, functions, comments, and control flow
+
+
+### Variables & Mutability
+
+- variables default to immutable
+
+```
+fn main() {
+    let x = 5;
+    println!("The value of x is: {}", x);
+    x = 6;
+    println!("The value of x is: {}", x);
+}
+```
+`cargo run variables`
+
+```
+2 |     let x = 5;
+  |         -
+  |         |
+  |         first assignment to `x`
+  |         help: make this binding mutable: `mut x`
+3 |        println!("The value of x is: {}", x);
+4 |        x = 6;
+  |        ^^^^^ cannot assign twice to immutable variable
+```
+
+- confusing; they say use `let` for assignment, but `let` causes shadowing so these errors do not happen
+
+
+```
+fn main() {
+    let x = 5;
+    println!("The value of x is: {}", x);
+    let x = 6;
+    println!("The value of x is: {}", x);
+}
+```
+`cargo run variables`
+
+```
+   Compiling variables v0.1.0 (/Users/jprep/Documents/github_personal_projects/rust_book/chapter_3/variables)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.00s
+     Running `target/debug/variables`
+The value of x is: 5
+The value of x is: 6
+```
+
+- double confusing - it doesn't allow assignment without let 
+
+```
+fn main() {
+    x = 5;
+       println!("The value of x is: {}", x);
+    x = 6;
+       println!("The value of x is: {}", x);
+}
+```
+
+gives:
+
+```
+(base) 1-01-184:variables jprep$ cargo run
+   Compiling variables v0.1.0 (/Users/jprep/Documents/github_personal_projects/rust_book/chapter_3/variables)
+error[E0425]: cannot find value `x` in this scope
+ --> src/main.rs:2:5
+  |
+2 |     x = 5;
+  |     ^ not found in this scope
+
+error[E0425]: cannot find value `x` in this scope
+ --> src/main.rs:3:42
+  |
+3 |        println!("The value of x is: {}", x);
+  |                                          ^ not found in this scope
+
+```
+but if you explicitly define it with `let mut`, it is happy with = as a reassignment:
+
+
+```
+fn main() {
+    let mut x = 5;
+    println!("The value of x is: {}", x);
+    x = 6;
+    println!("The value of x is: {}", x);
+}
+```
+
+
+```
+(base) 1-01-184:variables jprep$ cargo run
+   Compiling variables v0.1.0 (/Users/jprep/Documents/github_personal_projects/rust_book/chapter_3/variables)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.68s 	
+	Running `target/debug/variables`
+	The value of x is: 5
+	The value of x is: 6
+```
+
+#### Differences Between Variables and Constants
+
+- cannot `mut` a constant (makes sense)
+- `const` is used to define a constant
+- constants must have an explicitly defined type
+- constants can be declared in any scope
+	- not sure about this yet, but assume global/package/namespace?
+- constants must be a constant expression, not the result of a function or a value at runtime
+	- i think that just means it must be clearly defined from the start
+- conventions:
+	- always CAPS constants
+	- underscores can be used to enhance readability (of numbers) 
+		- 100_000_000 == 100,000,000 == 100000000
+
+##### Direct from the docs :::
+
+__Constants are valid for the entire time a program runs, within the scope they were declared in, 
+making them a useful choice for values in your application domain that multiple parts of 
+the program might need to know about, such as the maximum number of points any player of a 
+game is allowed to earn or the speed of light.
+
+Naming hardcoded values used throughout your program as constants is useful in conveying the 
+meaning of that value to future maintainers of the code. It also helps to have only one place 
+in your code you would need to change if the hardcoded value needed to be updated in the future.__
+
+#### Shadowing
+
+- __you can declare a new variable with the same name as a previous variable,
+ and the new variable shadows the previous variable__
+- I don't see how this is different from default mutable variables 
+	- does it have any kind of warning that a variable name has been used before?
+	- doesn't seem to?
+	- __Shadowing is different from marking a variable as mut, because we’ll get a 
+	compile-time error if we accidentally try to reassign to this variable without 
+	using the let keyword. By using let, we can perform a few transformations on a
+	value but have the variable be immutable after those transformations have been 
+	completed.__
+		- Sure, but I guess I have just trained myself into that with R
+	- `let` allows you to alter the type (again, yep, makes sense)
+- oh ok:
+```
+let space = "   ";
+let space = space.len();
+```
+is fine
+
+``` 
+let mut space = "   ";
+spac = space.len();
+```
+is a type error
+
+- `let` is actual reassignment
+- `mut` allows you to change JUST THE VALUE - so I guess useful for IO/interactive things
+
+
+### Data types
+
+- Keep in mind that Rust is a statically typed language,
+ which means that it must know the types of all variables at compile time.
+- scalar/compound
+	- scalar == single value
+		- int
+			- u = unsigned (positive only)
+			- i = signed (pos + neg)
+			- 6/16/23/62/128/arch bit numbers
+			- `isize`/`usize` are also available as default-bit-level-for-your-system
+			
+#### Docs say :::
+
+__So how do you know which type of integer to use? If you’re unsure, Rust’s defaults are 
+generally good choices, and integer types default to i32: this type is generally the 
+fastest, even on 64-bit systems. The primary situation in which you’d use isize or usize 
+is when indexing some sort of collection.__
+
+- float
+	- `f32` and `f64`
+	- defaults to f64 because it is more precise
+- `bool`
+	- true/false (lower case)
+- char
+	- Unicode Scalar Values range from U+0000 to U+D7FF and U+E000 to U+10FFFF inclusive. 
+	- see chaper 8 for more
+	
+	
+### Compound Types
+
+- Compound types can group multiple values into one type.
+- Rust has two primitive compound types: tuples and arrays.
+
+
