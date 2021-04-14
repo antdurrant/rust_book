@@ -230,3 +230,15 @@ match guess.cmp(&secret_number) {
 }
 
 - `match` statements are just like `switch` statements 
+
+### THE & THING
+- it is about OWNERSHIP of memory
+- https://youtu.be/s19G6n0UjsM?t=1353
+- T = any object 
+	- `T` means you own it and are responsible for freeing it
+	- `&mut T` means you have a exclusive read/write access, but you are not responsible for freeing it
+	- `&T` means you have read-only access
+	- rust compiler checks that you do not have
+		- `&mut T` AND `T` at the same time
+		- multiple `&mut T` at the same time
+	
