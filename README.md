@@ -412,7 +412,11 @@ is a type error
 			- i = signed (pos + neg)
 			- 6/16/23/62/128/arch bit numbers
 			- `isize`/`usize` are also available as default-bit-level-for-your-system
-			
+
+#### numeric operations
+
+- +, -, *, /, %
+		
 #### Docs say :::
 
 __So how do you know which type of integer to use? If you’re unsure, Rust’s defaults are 
@@ -433,6 +437,75 @@ is when indexing some sort of collection.__
 ### Compound Types
 
 - Compound types can group multiple values into one type.
-- Rust has two primitive compound types: tuples and arrays.
+- Rust has two primitive compound types: tuples and arrays
 
 
+
+### Function
+
+```
+fn function?_name (argument: type, argument: type){
+	body;
+	body;
+	body;
+}
+```
+
+
+- functions can be defined anywhere; does not matter for compilation
+- types must be defined in arguments - means they rarely need explicit definition elsewhere
+
+
+#### STATEMENTES VS EXPRESSIONS
+
+- statemens __do not return values__
+	- let x = 17;
+	- function definitions
+	- this does not work: **let x = (let y = 6);**
+	
+##### From the docs ::::
+
+**The let y = 6 statement does not return a value, so there isn’t anything for x to bind to.
+ This is different from what happens in other languages, such as C and Ruby, 
+ where the assignment returns the value of the assignment. 
+ In those languages, you can write x = y = 6 and have both x and y have the value 6; 
+ that is not the case in Rust.**
+ 
+ Expressions evaluate to something and make up most of the rest of the code that 
+ you’ll write in Rust. Consider a simple math operation, such as 5 + 6, 
+ which is an expression that evaluates to the value 11. Expressions can be part of 
+ statements: in Listing 3-1, the 6 in the statement let y = 6; is an expression that 
+ evaluates to the value 6. Calling a function is an expression. Calling a macro is an 
+ expression. The block that we use to create new scopes, {}, is an expression, 
+ for example:
+
+Filename: src/main.rs
+
+
+fn main() {
+    let x = 5;
+
+    let y = {
+        let x = 3;
+        x + 1
+    };
+
+    println!("The value of y is: {}", y);
+}
+This expression:
+
+
+{
+    let x = 3;
+    x + 1
+}
+is a block that, in this case, evaluates to 4. That value gets bound to y as part of the
+ let statement. Note the x + 1 line without a semicolon at the end, which is unlike 
+ most of the lines you’ve seen so far. **Expressions do not include ending semicolons.
+  If you add a semicolon to the end of an expression, you turn it into a statement, 
+  which will then not return a value.** Keep this in mind as you explore function return 
+values and expressions next.
+	
+https://doc.rust-lang.org/stable/book/ch03-03-how-functions-work.html#functions-with-return-values
+
+some of this is fairly unintuitive, you will need to read through this section a couple of times.
